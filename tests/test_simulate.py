@@ -16,6 +16,7 @@ def test_five_days_by_hand() -> None:
     assert r.lost_margin == Decimal("0.00")
     assert r.total == Decimal("102.50")
     assert r.avg_stock == 5.0
+    assert r.nights == (7, 4, 1, 8, 5)
     assert r.fill_rate == 1.0
     assert r.turnover(days=5) == pytest.approx(15 * 73 / 5)
 

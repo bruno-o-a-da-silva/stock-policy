@@ -54,6 +54,7 @@ class Result:
     holding: Decimal
     lost_margin: Decimal
     avg_stock: float
+    nights: tuple[int, ...] = ()
 
     @property
     def total(self) -> Decimal:
@@ -86,7 +87,7 @@ def run(sku: Sku, policy: Policy, demand: list[int], start_stock: int) -> Result
         book.receive(-1, start_stock)
     pipeline: dict[int, int] = {}
     orders = served = 0
-    night_units = 0
+    nights: list[int] = []
     for day, want in enumerate(demand):
         arriving = pipeline.pop(day, 0)
         if arriving:
@@ -97,7 +98,8 @@ def run(sku: Sku, policy: Policy, demand: list[int], start_stock: int) -> Result
         if q:
             orders += 1
             pipeline[day + sku.lead_days] = pipeline.get(day + sku.lead_days, 0) + q
-        night_units += book.balance()
+        nights.append(book.balance())
+    night_units = sum(nights)
     total_demand = sum(demand)
     lost = total_demand - served
     daily_hold = sku.unit_cost * sku.holding_rate / DAYS_PER_YEAR
@@ -110,4 +112,5 @@ def run(sku: Sku, policy: Policy, demand: list[int], start_stock: int) -> Result
         holding=(daily_hold * night_units).quantize(CENT, ROUND_HALF_UP),
         lost_margin=((sku.price - sku.unit_cost) * lost).quantize(CENT, ROUND_HALF_UP),
         avg_stock=night_units / len(demand),
+        nights=tuple(nights),
     )
