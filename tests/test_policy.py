@@ -22,8 +22,9 @@ def test_eoq_exact_square_is_not_rounded_up() -> None:
     assert eoq(1000, Decimal("10"), Decimal("8"), Decimal("0.25")) == 100
 
 
-@pytest.mark.parametrize("args", [(0, "1", "1", "1"), (1, "0", "1", "1"),
-                                  (1, "1", "0", "1"), (1, "1", "1", "0")])
+@pytest.mark.parametrize(
+    "args", [(0, "1", "1", "1"), (1, "0", "1", "1"), (1, "1", "0", "1"), (1, "1", "1", "0")]
+)
 def test_eoq_rejects_non_positive(args: tuple[int, str, str, str]) -> None:
     d, s, c, h = args
     with pytest.raises(ValueError):

@@ -20,8 +20,7 @@ SHADE = {"ordering": GOLD_DIM, "holding": GOLD, "lost_margin": "#E8D27A"}
 
 
 def sums(kind: str) -> dict[str, float]:
-    return {p: float(sum((getattr(getattr(r, kind), p) for r in ROWS), Decimal(0)))
-            for p in PARTS}
+    return {p: float(sum((getattr(getattr(r, kind), p) for r in ROWS), Decimal(0))) for p in PARTS}
 
 
 def hero() -> None:
@@ -32,10 +31,23 @@ def hero() -> None:
     fig.text(0.05, 0.69, "When to reorder and how much, per item,", fontsize=17, color=TEXT)
     fig.text(0.05, 0.635, "proved by replaying a year of demand.", fontsize=17, color=MUTED)
     fig.add_artist(plt.Line2D([0.05, 0.12], [0.57, 0.57], color=GOLD, lw=2))
-    fig.text(0.95, 0.80, f"{(tb - tn) / tb:.0%} lower", fontfamily=SERIF, fontsize=40,
-             color=GOLD, ha="right")
-    fig.text(0.95, 0.72, "yearly stock cost, 40 synthetic SKUs, seed 7", fontsize=13,
-             color=MUTED, ha="right")
+    fig.text(
+        0.95,
+        0.80,
+        f"{(tb - tn) / tb:.0%} lower",
+        fontfamily=SERIF,
+        fontsize=40,
+        color=GOLD,
+        ha="right",
+    )
+    fig.text(
+        0.95,
+        0.72,
+        "yearly stock cost, 40 synthetic SKUs, seed 7",
+        fontsize=13,
+        color=MUTED,
+        ha="right",
+    )
     ax = fig.add_axes((0.05, 0.1, 0.9, 0.38))
     ax.set_axis_off()
     ax.set_xlim(0, tb * 1.02)
@@ -65,8 +77,9 @@ def cost_curve() -> None:
     fig, ax = plt.subplots(figsize=(10, 5.5))
     ax.plot(qs, order, color=GOLD_DIM, lw=1.5, label="Ordering  D / Q x S")
     ax.plot(qs, hold, color=MUTED, lw=1.5, label="Holding  Q / 2 x H")
-    ax.plot(qs, [a + b for a, b in zip(order, hold, strict=True)], color=GOLD, lw=2.5,
-            label="Total")
+    ax.plot(
+        qs, [a + b for a, b in zip(order, hold, strict=True)], color=GOLD, lw=2.5, label="Total"
+    )
     ax.axvline(q_star, color=TEXT, lw=0.8, ls=":")
     ax.text(q_star + 8, max(order) * 0.8, f"Q* = {q_star}", color=TEXT)
     ax.set_xlabel("Order size Q (units)")
@@ -82,16 +95,27 @@ def sawtooth() -> None:
     row = ROWS[3]
     days = 150
     fig, ax = plt.subplots(figsize=(10, 5.5))
-    ax.plot(row.baseline.nights[:days], color=MUTED, lw=1.3,
-            label=f"Monthly cover, up to {monthly_cover(row.item).level}")
-    ax.plot(row.proposed.nights[:days], color=GOLD, lw=1.8,
-            label=f"(s, Q): s = {row.rule.reorder_point}, Q = {row.rule.quantity}")
+    ax.plot(
+        row.baseline.nights[:days],
+        color=MUTED,
+        lw=1.3,
+        label=f"Monthly cover, up to {monthly_cover(row.item).level}",
+    )
+    ax.plot(
+        row.proposed.nights[:days],
+        color=GOLD,
+        lw=1.8,
+        label=f"(s, Q): s = {row.rule.reorder_point}, Q = {row.rule.quantity}",
+    )
     ax.set_ylim(0, max(row.baseline.nights[:days]) * 1.3)
     ax.set_xlabel("Day")
     ax.set_ylabel("Units on the shelf at night")
     ax.legend(frameon=False)
-    title(ax, f"Same demand, two rules: {row.item.sku.code}",
-          f"Synthetic item, seed 7, lead time {row.item.sku.lead_days} days.")
+    title(
+        ax,
+        f"Same demand, two rules: {row.item.sku.code}",
+        f"Synthetic item, seed 7, lead time {row.item.sku.lead_days} days.",
+    )
     fig.tight_layout()
     fig.savefig(IMG / "sawtooth.png")
     plt.close(fig)

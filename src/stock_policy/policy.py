@@ -11,8 +11,7 @@ from decimal import Decimal
 from statistics import NormalDist
 
 
-def eoq(annual_demand: int, order_cost: Decimal, unit_cost: Decimal,
-        holding_rate: Decimal) -> int:
+def eoq(annual_demand: int, order_cost: Decimal, unit_cost: Decimal, holding_rate: Decimal) -> int:
     """Economic order quantity Q = sqrt(2 D S / H), with H = unit cost x holding rate."""
     if annual_demand <= 0 or order_cost <= 0 or unit_cost <= 0 or holding_rate <= 0:
         raise ValueError("demand and costs must be positive")

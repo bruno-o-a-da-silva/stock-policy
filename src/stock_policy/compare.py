@@ -32,5 +32,9 @@ def monthly_cover(item: Item, period: int = 30) -> MonthlyCover:
 def compare(item: Item, demand: list[int], service: float = 0.95) -> Row:
     rule = set_policy(item, service)
     start = math.ceil(item.daily_mean * item.sku.lead_days) + rule.quantity
-    return Row(item, rule, run(item.sku, monthly_cover(item), demand, start),
-               run(item.sku, rule, demand, start))
+    return Row(
+        item,
+        rule,
+        run(item.sku, monthly_cover(item), demand, start),
+        run(item.sku, rule, demand, start),
+    )
